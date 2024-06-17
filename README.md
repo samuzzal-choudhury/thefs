@@ -115,7 +115,7 @@ $ kubectl get no -o yaml
 
 Set the API_URL_BASE based on the node IP
 
-```
+``` 
 $ cd ../cmd
 $ export PATH:$PATH:.
 $ export API_BASE_URL=http://172.18.0.3:30491/api/v1
@@ -216,7 +216,7 @@ $ docker run thefs_lint_docstyle
 <no output in case of a successful run>
 ```
 
-To see linter error(s), change the a line length of the files.py to more than 79
+To see linter error(s), change the line length of the files.py to more than 79
 
 ```
 $ docker build -t thefs_lint_docstyle:latest -f Dockerfile.linter_docstyle .
@@ -224,3 +224,23 @@ $ docker build -t thefs_lint_docstyle:latest -f Dockerfile.linter_docstyle .
 $ docker run thefs_lint_docstyle
 thefs/utils/files.py:49:80: E501 line too long (80 > 79 characters)
 ```
+
+## TODO
+### Optimizations
+* Command line optimization to compress large files for add/update operations and
+  implement the logic to decompress such files and store those.
+
+* SHA256 hash digest creation on server side while adding/updating and add 
+  that to a cache (dict). CLI updates to generate hash digest for a file before
+  sending that for adding/updating and call a special API resource to verify
+  if the same content is available already on the server storage. In such a case,
+  send the filename while making add/update call with the digest so that a file
+  can be creating by merely a copy operation on the server side.
+
+* Another possible optimization is to use asynchronous processing add/update
+  operations. In python, that can be done by using Celery framework with redis 
+  message broker.
+
+* Setting up a CI pipeline to perform unit test, security vulnerability check, 
+  build and push steps. And later, continuous delivery to a hosted k8s cluster.
+

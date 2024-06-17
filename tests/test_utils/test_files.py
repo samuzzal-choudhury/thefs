@@ -19,15 +19,15 @@ def test_store_file_success(file_utils):
             file.save.assert_called_once()
 
 
-# def test_store_file_failure(file_utils):
-#     with patch('thefs.utils.files.secure_filename', return_value='test.txt'):
-#         with patch('builtins.open', mock_open()) as mocked_file:
-#             mocked_file.side_effect = Exception('File save error')
-#             file = MagicMock()
-#             file.save = MagicMock(side_effect=Exception('File save error'))
-#             result = file_utils.store_file('test.txt', file)
-#             assert result is False
-#             file.save.assert_called_once()
+def test_store_file_failure(file_utils):
+    with patch('thefs.utils.files.secure_filename', return_value='test.txt'):
+        with patch('builtins.open', mock_open()) as mocked_file:
+            mocked_file.side_effect = OSError('File save error')
+            file = MagicMock()
+            file.save = MagicMock(side_effect=OSError('File save error'))
+            result = file_utils.store_file('test.txt', file)
+            assert result is False
+            file.save.assert_called_once()
 
 
 def test_list_files(file_utils):
@@ -50,11 +50,11 @@ def test_remove_file_success(file_utils):
             assert result is True
 
 
-# def test_remove_file_failure(file_utils):
-#     with patch('os.path.isfile', return_value=True):
-#         with patch('os.remove', side_effect=Exception('Remove error')):
-#             result = file_utils.remove_file('test.txt')
-#             assert result is False
+def test_remove_file_failure(file_utils):
+    with patch('os.path.isfile', return_value=True):
+        with patch('os.remove', side_effect=OSError('Remove error')):
+            result = file_utils.remove_file('test.txt')
+            assert result is False
 
 
 def test_generate_words_frequency(file_utils):
