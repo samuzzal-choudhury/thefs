@@ -89,7 +89,7 @@ if __name__ == '__main__':
     remove_parser = subparsers.add_parser('remove', help='Delete a file')
     remove_parser.add_argument('filename', help='Filename to delete')
 
-    freq_words_parser = subparsers.add_parser('freq-words', help='Path to the file containing words')
+    freq_words_parser = subparsers.add_parser('freq-words', help='Generate the "n" most or least frequently occuring words in the file store')
     freq_words_parser.add_argument('-n', '--limit', type=int, default=10, help="Limit of frequent words")
     freq_words_parser.add_argument('-o', '--order', type=str, choices=["asc", "dsc"], default="dsc",
                                    help="Order of the frequent words",)

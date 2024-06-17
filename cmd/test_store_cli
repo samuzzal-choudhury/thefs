@@ -1,0 +1,15 @@
+store ls
+store add ../sample_files/file1.txt
+store add ../sample_files/file2.txt
+store add ../sample_files/file2.txt
+store update ../sample_files/file2.txt
+store update ../sample_files/file3.txt
+store ls
+store wc
+store freq-words -n 5 -o dsc
+store freq-words -n 5 -o asc
+store remove file1.txt
+store remove file2.txt
+store remove file3.txt
+store ls
+
