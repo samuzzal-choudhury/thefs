@@ -104,6 +104,9 @@ def get_freq_words():
     """Endpoint to get the list of first n frequent words available."""
     if request.method == 'GET':
         limit, order = request.args.get('limit'), request.args.get('order')
-        print(limit, order)
-        return jsonify(futil.generate_words_frequency(limit, order)), 200
+        words = futil.generate_words_frequency(limit, order)
+        if len(words) > 0:
+            return jsonify(words), 200
+        else:
+            return jsonify({'error': 'Unsupported arguments received'}), 400
     return jsonify({'error': 'Unsupported method'}), 405

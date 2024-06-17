@@ -1,0 +1,7 @@
+A TXT file, short for "text file," is a type of computer file that stores plain text information without any formatting. These files are widely used for various purposes, such as storing data, writing scripts, and exchanging information between different programs and platforms. TXT files are simple and easy to create and edit, making them popular for a wide range of applications.
+
+One of the key characteristics of TXT files is their simplicity. Unlike other file formats such as DOCX (Microsoft Word document) or PDF (Portable Document Format), which can contain complex formatting, images, and other multimedia elements, TXT files contain only plain text. This simplicity makes TXT files lightweight and easy to work with, as they can be opened and edited using a basic text editor program like Notepad on Windows or TextEdit on macOS.
+
+One common use of TXT files is for storing data in a format that is easily readable by both humans and computers. For example, a TXT file might contain a list of names, addresses, or other information that needs to be processed by a computer program. Because TXT files are plain text, they can be easily parsed and manipulated using programming languages like Python, Java, or C++.
+
+

@@ -22,9 +22,11 @@ class FileUtils:
             filepath = os.path.join(self.dir, fname)
             try:
                 file.save(filepath)
-            except Exception as e:
-                logger.warning(f'File {filepath} could not '
-                               f'be saved. Error {e}')
+                logger.info(f'File {filepath} stored successfully '
+                            f'in {filepath}.')
+            except OSError as e:
+                logger.error(f'File {filepath} could not '
+                             f'be saved. Error {e}')
                 return False
             return True
         return False
@@ -34,6 +36,7 @@ class FileUtils:
         filenames = []
         if os.path.exists(self.dir):
             filenames = os.listdir(self.dir)
+        logger.info(f'Retrieved files {filenames}')
         return filenames
 
     def remove_file(self, fname):
@@ -42,9 +45,9 @@ class FileUtils:
         if os.path.isfile(filepath):
             try:
                 os.remove(filepath)
-            except Exception as e:
-                logger.warning(f'File {filepath} could not be '
-                               f'removed. Error {e}')
+            except OSError as e:
+                logger.error(f'File {filepath} could not be '
+                             f'removed. Error {e}')
                 return False
             return True
         return False
@@ -55,7 +58,7 @@ class FileUtils:
             with open(filename, 'r') as file:
                 content = file.read()
         except FileNotFoundError:
-            print(f"File {filename} not found")
+            logger.warning(f'File {filename} not found')
             return Counter()
         wc = Counter(content.strip().split())
         return wc
@@ -63,14 +66,16 @@ class FileUtils:
     def __get_most_common_n(self, word_counter, limit):
         """Get the first n most common words in the storage."""
         most_common_words = word_counter.most_common(int(limit))
+        logger.debug(f'Most common {limit} words are {most_common_words}')
         return [word for word, _ in most_common_words]
 
     def __get_least_common_n(self, word_counter, limit):
         """Get the first n least common words in the storage."""
-        least_first_agg_counts = (
+        least_first_word_counts = (
             sorted(word_counter.items(), key=lambda x: x[1]))
         least_common_words = \
-            [key for key, count in least_first_agg_counts[1:] if count > 0]
+            [key for key, count in least_first_word_counts[1:] if count > 0]
+        logger.debug(f'Least common {limit} words are {least_common_words}')
         return least_common_words[:int(limit)]
 
     def generate_words_frequency(self, limit=-1, order='dsc'):
@@ -87,6 +92,7 @@ class FileUtils:
         if limit == -1:
             # limit -1 indicates all words without any limit
             limit = len(word_counter)
+        logger.debug(f'Generated word counter {word_counter}')
 
         if order == 'dsc':
             return self.__get_most_common_n(word_counter, limit)
@@ -102,4 +108,5 @@ class FileUtils:
             filepath = os.path.join(self.dir, file)
             file_wc = self.__generate_file_word_count(filepath)
             word_counter.update(file_wc)
+        logger.debug(f'Total word count is {word_counter.total()}')
         return word_counter.total()

@@ -1,0 +1,4 @@
+Another use of TXT files is for writing scripts or code. Many programming languages use TXT files as a standard way to store source code. Programmers can write code in a text editor and save it as a TXT file, which can then be compiled or interpreted by the appropriate programming language's compiler or interpreter.
+
+TXT files are also commonly used for sharing text-based information over the internet. For example, when you download a README file from a software repository or a configuration file from a website, it is often in TXT format. This is because TXT files are platform-independent and can be opened and read on any device without the need for special software. When you download a TXT file from the internet, you are essentially downloading a plain text document that can be opened and read using any text editor or word processing program. This makes TXT files convenient for sharing information quickly and easily.
+
