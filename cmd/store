@@ -1,0 +1,110 @@
+#!/usr/bin/python3
+
+import argparse
+import hashlib
+import os
+import requests
+
+
+API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:5000/api/v1')
+
+
+def add_files(files):
+    endpoint = '/add'
+    files_to_upload = [('files', (os.path.basename(f), open(f, 'rb'))) for f in files]
+    response = requests.post(f"{API_BASE_URL}{endpoint}", files=files_to_upload)
+    print_response(response)
+
+
+def update_file(file):
+    with open(file, 'rb') as f:
+        filename = os.path.basename(file)
+        endpoint = '/update'
+        file_to_upload = {'files': (filename, f)}
+        response = requests.put(f'{API_BASE_URL}{endpoint}', files=file_to_upload)
+        print_response(response)
+
+
+def remove_file(filename):
+    endpoint = '/remove'
+    response = requests.delete(f'{API_BASE_URL}{endpoint}', data={'filename': filename})
+    print_response(response)
+
+
+def list_files():
+    try:
+        endpoint = '/list'
+        response = requests.get(f'{API_BASE_URL}{endpoint}')
+        if len(response.json()) == 0:
+            print('No files')
+        for file in response.json():
+            print(file)
+    except requests.exceptions.RequestException as e:
+        print(f'Error listing files: {str(e)}')
+
+
+def print_response(response):
+    print(f"Response Status Code: {response.status_code}")
+    if response.status_code == 200:
+        print("Response Body:")
+        print(response.json())
+    else:
+        print(f"Error: {response.text}")
+
+
+def check_for_existing_content(file):
+    hasher = hashlib.sha256(file.read())
+    endpoint = f'/file-hash/{hasher.hexdigest()}'
+    response = requests.get(f'{API_BASE_URL}{endpoint}')
+    return response
+
+
+def count_words():
+    endpoint = '/word-count'
+    response = requests.get(f'{API_BASE_URL}{endpoint}')
+    print(response.json())
+
+
+def get_freq_words(args):
+    params = {"limit": args.limit, "order": args.order}
+    endpoint = '/freq-words'
+    response = requests.get(f'{API_BASE_URL}{endpoint}', params=params)
+    print(response.json())
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Command line tool for API operations')
+    subparsers = parser.add_subparsers(dest='command', required=True)
+
+    save_parser = subparsers.add_parser('add', help='Upload files')
+    save_parser.add_argument('files', nargs='+', help='Files to upload')
+
+    update_parser = subparsers.add_parser('update', help='Update a single file')
+    update_parser.add_argument('file', help='File to update')
+
+    subparsers.add_parser('ls', help='List files on the server')
+
+    subparsers.add_parser('wc', help='Generate the total word count of all files')
+
+    remove_parser = subparsers.add_parser('remove', help='Delete a file')
+    remove_parser.add_argument('filename', help='Filename to delete')
+
+    freq_words_parser = subparsers.add_parser('freq-words', help='Path to the file containing words')
+    freq_words_parser.add_argument('-n', '--limit', type=int, default=10, help="Limit of frequent words")
+    freq_words_parser.add_argument('-o', '--order', type=str, choices=["asc", "dsc"], default="dsc",
+                                   help="Order of the frequent words",)
+
+    args = parser.parse_args()
+
+    if args.command == 'add':
+        add_files(args.files)
+    elif args.command == 'ls':
+        list_files()
+    elif args.command == 'update':
+        update_file(args.file)
+    elif args.command == 'remove':
+        remove_file(args.filename)
+    elif args.command == 'wc':
+        count_words()
+    elif args.command == 'freq-words':
+        get_freq_words(args)
