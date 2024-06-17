@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thefs-deployment  # Change this to your deployment name
+spec:
+  replicas: 1  # Number of pod replicas (you can adjust this)
+  selector:
+    matchLabels:
+      app: thefs
+  template:
+    metadata:
+      labels:
+        app: thefs
+    spec:
+      containers:
+      - name: thefs
+        image: samuzzal/thefs:latest  # Replace if using a different image
+        ports:
+        - containerPort: 5000  # Adjust if the container port is different
+        livenessProbe:
+          httpGet:
+            path: /api/v1/liveness
+            port: 5000  # Adjust if the container port is different
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/v1/readiness
+            port: 5000  # Adjust if the container port is different
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+
